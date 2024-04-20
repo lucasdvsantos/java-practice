@@ -2,62 +2,67 @@ package application;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
-import entities.Department;
-import entities.HourContract;
-import entities.Worker;
-import entities.enums.WorkerLevel;
+import entities.Client;
+import entities.Order;
+import entities.OrderItem;
+import entities.Product;
+import entities.enums.OrderStatus;
 
 public class Program {
 
 	public static void main(String[] args) throws ParseException {
 		
-		Locale.setDefault(Locale.US);
-		Worker w1 = new Worker();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		SimpleDateFormat sdfIncome = new SimpleDateFormat("MM/yyyy");
-		Calendar cal = Calendar.getInstance();
+		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
 		
-		System.out.print("Enter department's name: ");
-		w1.setDepartment(new Department(sc.nextLine()));
-		System.out.println("Enter worker data");
-		System.out.print("Name: ");
-		w1.setName(sc.nextLine());
-		System.out.print("Level: ");
-		w1.setLevel(WorkerLevel.valueOf(sc.nextLine()));
-		System.out.print("Base Salary: ");
-		w1.setBaseSalary(sc.nextDouble());
-		System.out.print("How many contracts to this worker? ");
-		int contractsNum = sc.nextInt();
+		Client client1 = new Client();
 		
-		for (int i = 1; i <= contractsNum; i++) {
-			System.out.println("Enter contract #" + i + " data:");
-			HourContract c = new HourContract();
+		System.out.println("Enter client data:");
+		System.out.print("Name: ");
+		client1.setName(sc.nextLine());
+		System.out.print("Email: ");
+		client1.setEmail(sc.nextLine());
+		System.out.print("Birth date (DD/MM/YYYY): ");
+		client1.setBirthDate(sdf.parse(sc.nextLine()));
+		
+		Order order1 = new Order();
+		order1.setMoment(new Date());
+		order1.setClient(client1);
+		
+		System.out.println("Enter order data:");
+		System.out.print("Status: ");
+		order1.setStatus(OrderStatus.valueOf(sc.nextLine()));
+		System.out.print("How many items to this order? ");
+		int itemsAmount = sc.nextInt();
+		
+		for (int i = 1; i <= itemsAmount; i++) {
+			System.out.println("Enter #" + i + " item data:");
+			Product prod = new Product();
 			sc.nextLine();
-			System.out.print("Date (DD/MM/YYYY): ");
-			c.setDate(sdf.parse(sc.nextLine()));
-			System.out.print("Value per hour: ");
-			c.setValuePerHour(sc.nextDouble());
-			System.out.print("Duration (hours): ");
-			c.setHours(sc.nextInt());
+			System.out.print("Product name: ");
+			prod.setName(sc.nextLine());
+			System.out.print("Product price: ");
+			prod.setPrice(sc.nextDouble());
+			System.out.print("Quantity: ");
+			int quantity = sc.nextInt();
 			
-			w1.addContract(c);
+			OrderItem od = new OrderItem(quantity, prod);
+			order1.addItem(od);
+			
 		}
 		
+		
 		System.out.println();
-		sc.nextLine();
-		System.out.print("Enter month and year to calculate income (MM/YYYY): ");
-		String incomeDate = sc.nextLine();
-		cal.setTime(sdfIncome.parse(incomeDate));
-		System.out.println("Name: " + w1.getName());
-		System.out.println("Department: " + w1.getDepartment().getName());
-		System.out.println("Income for " + incomeDate + ": " + w1.income(cal.get(Calendar.YEAR), 1 + cal.get(Calendar.MONTH)));
+		System.out.println("ORDER SUMMARY:");
+		System.out.println(order1);
 		
 		sc.close();
+
 	}
 
 }
